@@ -1,15 +1,9 @@
 import streamlit as st
 from urllib.parse import urlparse, parse_qs
+from questions_data import questions_data  # Import questions_data from the new file
 
 # Set the initial page configuration
 st.set_page_config(page_title="G1 License Test Practice", layout="centered")
-
-# The list of questions and their correct answers
-questions_data = [
-    (1, 'c'), (2, 'b'), (3, 'b'), (4, 'd'), (5, 'a'), (6, 'd'), (7, 'c'), (8, 'b'), (9, 'b'), (10, 'a'),
-    (11, 'a'), (12, 'c'), (13, 'd'), (14, 'a'), (15, 'c'), (16, 'b'), (17, 'c'), (18, 'd'), (19, 'c'), (20, 'b'),
-    # Add remaining questions up to 201
-]
 
 # Inject custom CSS for styling
 st.markdown(
@@ -48,15 +42,19 @@ if 'score' not in st.session_state:
 col1, col2, col3, col4 = st.columns(4)
 if col1.button('Go to Question 1'):
     st.session_state.current_question_index = 0
+    st.session_state.show_next_button = False
     st.experimental_set_query_params(question=1)
 if col2.button('Go to Question 51'):
     st.session_state.current_question_index = 50
+    st.session_state.show_next_button = False
     st.experimental_set_query_params(question=51)
 if col3.button('Go to Question 101'):
     st.session_state.current_question_index = 100
+    st.session_state.show_next_button = False
     st.experimental_set_query_params(question=101)
 if col4.button('Go to Question 151'):
     st.session_state.current_question_index = 150
+    st.session_state.show_next_button = False
     st.experimental_set_query_params(question=151)
 
 # Get query parameters
@@ -139,4 +137,3 @@ if st.session_state.show_next_button:
 if st.session_state.current_question_index >= len(questions_data):
     st.write("You've completed all the questions!")
     st.write(f"Your final score is: {st.session_state.score}/{len(questions_data)}")
-
