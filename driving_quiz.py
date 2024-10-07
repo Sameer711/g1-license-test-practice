@@ -32,6 +32,11 @@ st.markdown(
         var audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
         audio.play();
     }
+    function updateQueryParam(param, value) {
+        const url = new URL(window.location);
+        url.searchParams.set(param, value);
+        window.location.href = url;
+    }
     </script>
     """,
     unsafe_allow_html=True
@@ -53,10 +58,10 @@ if 'score' not in st.session_state:
 # Display the navigation permalinks at the top
 st.markdown(
     """
-    <a href="?question=1">Go to Question 1</a> | 
-    <a href="?question=51">Go to Question 51</a> | 
-    <a href="?question=101">Go to Question 101</a> | 
-    <a href="?question=151">Go to Question 151</a>
+    <a href="javascript:updateQueryParam('question', '1')">Go to Question 1</a> | 
+    <a href="javascript:updateQueryParam('question', '51')">Go to Question 51</a> | 
+    <a href="javascript:updateQueryParam('question', '101')">Go to Question 101</a> | 
+    <a href="javascript:updateQueryParam('question', '151')">Go to Question 151</a>
     """,
     unsafe_allow_html=True
 )
