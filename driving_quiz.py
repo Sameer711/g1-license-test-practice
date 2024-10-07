@@ -11,7 +11,7 @@ questions_data = [
     # Add remaining questions up to 201
 ]
 
-# Inject custom CSS and JavaScript for sound effect
+# Inject custom CSS for styling
 st.markdown(
     """
     <style>
@@ -27,17 +27,6 @@ st.markdown(
         margin: 5px 0;
     }
     </style>
-    <script>
-    function playCorrectSound() {
-        var audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
-        audio.play();
-    }
-    function updateQueryParam(param, value) {
-        const url = new URL(window.location);
-        url.searchParams.set(param, value);
-        window.location.href = url;
-    }
-    </script>
     """,
     unsafe_allow_html=True
 )
@@ -58,10 +47,10 @@ if 'score' not in st.session_state:
 # Display the navigation permalinks at the top
 st.markdown(
     """
-    <a href="javascript:updateQueryParam('question', '1')">Go to Question 1</a> | 
-    <a href="javascript:updateQueryParam('question', '51')">Go to Question 51</a> | 
-    <a href="javascript:updateQueryParam('question', '101')">Go to Question 101</a> | 
-    <a href="javascript:updateQueryParam('question', '151')">Go to Question 151</a>
+    <a href="?question=1">Go to Question 1</a> | 
+    <a href="?question=51">Go to Question 51</a> | 
+    <a href="?question=101">Go to Question 101</a> | 
+    <a href="?question=151">Go to Question 151</a>
     """,
     unsafe_allow_html=True
 )
@@ -86,7 +75,7 @@ def handle_answer(user_answer):
         st.session_state.score += 1
         st.session_state.show_next_button = True
         # Play correct sound
-        st.markdown("<script>playCorrectSound();</script>", unsafe_allow_html=True)
+        st.markdown("<script>var audio = new Audio('https://www.soundjay.com/button/beep-07.wav'); audio.play();</script>", unsafe_allow_html=True)
     else:
         st.session_state.attempts += 1
         if st.session_state.attempts < 2:
