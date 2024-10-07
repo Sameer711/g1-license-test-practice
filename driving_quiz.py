@@ -8,12 +8,13 @@ questions_data = [
     # Add remaining questions up to 201
 ]
 
-# Inject custom CSS for larger radio buttons
+# Inject custom CSS for larger feedback text
 st.markdown(
     """
     <style>
-    .stRadio > div { 
-        font-size: 20px; 
+    .feedback {
+        font-size: 24px;
+        font-weight: bold;
     }
     </style>
     """, 
@@ -50,7 +51,7 @@ def handle_answer(user_answer):
 
     # Check if the answer is correct
     if user_answer == correct_answer:
-        st.write("Correct!")
+        st.markdown("<div class='feedback'>Correct!</div>", unsafe_allow_html=True)
         st.session_state.score += 1  # Increase score for correct answer
         st.session_state.show_next_button = True
     else:
@@ -58,7 +59,7 @@ def handle_answer(user_answer):
         if st.session_state.attempts < 2:
             st.write("Wrong! Try again.")
         else:
-            st.write(f"Wrong! The correct answer is: {correct_answer}")
+            st.markdown(f"<div class='feedback'>Wrong! The correct answer is: {correct_answer.upper()}</div>", unsafe_allow_html=True)
             st.session_state.show_next_button = True
 
 # Function to move to the next question
@@ -79,12 +80,20 @@ question_text = f"Question {current_question[0]}"
 # Display the question as a header
 st.markdown(f"## {question_text}")
 
-# Display the answer options with larger radio buttons
-user_answer = st.radio('Choose your answer:', ['a', 'b', 'c', 'd'])
-
-# Submit button for user to submit their answer
-if st.button('Submit'):
-    handle_answer(user_answer)
+# Display the answer buttons
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    if st.button('A'):
+        handle_answer('a')
+with col2:
+    if st.button('B'):
+        handle_answer('b')
+with col3:
+    if st.button('C'):
+        handle_answer('c')
+with col4:
+    if st.button('D'):
+        handle_answer('d')
 
 # Display the "Next Question" button if the user answered correctly or exhausted attempts
 if st.session_state.show_next_button:
