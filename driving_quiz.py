@@ -8,7 +8,19 @@ questions_data = [
     # Add remaining questions up to 201
 ]
 
-# Initialize session state for tracking current question, attempts, and whether to show "Next Question" button
+# Inject custom CSS for larger radio buttons
+st.markdown(
+    """
+    <style>
+    .stRadio > div { 
+        font-size: 20px; 
+    }
+    </style>
+    """, 
+    unsafe_allow_html=True
+)
+
+# Initialize session state for tracking current question, attempts, score, and whether to show "Next Question" button
 if 'current_question_index' not in st.session_state:
     st.session_state.current_question_index = 0  # Start with the first question
 
@@ -17,6 +29,9 @@ if 'attempts' not in st.session_state:
 
 if 'show_next_button' not in st.session_state:
     st.session_state.show_next_button = False
+
+if 'score' not in st.session_state:
+    st.session_state.score = 0
 
 # Get query parameters and handle '/question/x' URLs
 query_params = st.experimental_get_query_params()
@@ -36,6 +51,7 @@ def handle_answer(user_answer):
     # Check if the answer is correct
     if user_answer == correct_answer:
         st.write("Correct!")
+        st.session_state.score += 1  # Increase score for correct answer
         st.session_state.show_next_button = True
     else:
         st.session_state.attempts += 1
@@ -53,12 +69,17 @@ def go_to_next_question():
     # Update the URL to include the new question number as a permalink
     st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
 
+# Display the score
+st.write(f"Score: {st.session_state.score}/{st.session_state.current_question_index}")
+
 # Get the current question
 current_question = questions_data[st.session_state.current_question_index]
 question_text = f"Question {current_question[0]}"
 
-# Display the question and answer options
-st.write(question_text)
+# Display the question as a header
+st.markdown(f"## {question_text}")
+
+# Display the answer options with larger radio buttons
 user_answer = st.radio('Choose your answer:', ['a', 'b', 'c', 'd'])
 
 # Submit button for user to submit their answer
@@ -73,3 +94,4 @@ if st.session_state.show_next_button:
 # Display a message when the quiz is completed
 if st.session_state.current_question_index >= len(questions_data):
     st.write("You've completed all the questions!")
+    st.write(f"Your final score is: {st.session_state.score}/{len(questions_data)}")
