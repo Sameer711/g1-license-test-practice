@@ -8,13 +8,20 @@ questions_data = [
     # Add remaining questions up to 201
 ]
 
-# Inject custom CSS for larger feedback text
+# Inject custom CSS for larger feedback text and button styles
 st.markdown(
     """
     <style>
     .feedback {
         font-size: 24px;
         font-weight: bold;
+    }
+    .stButton > button {
+        width: 100%;
+        padding: 15px;
+        font-size: 20px;
+        border-radius: 10px;
+        margin: 5px 0;
     }
     </style>
     """, 
