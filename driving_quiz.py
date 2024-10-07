@@ -8,12 +8,15 @@ questions_data = [
     # Add remaining questions up to 201
 ]
 
-# Initialize session state for tracking current question and attempts
+# Initialize session state for tracking current question, attempts, and whether to show "Next Question" button
 if 'current_question_index' not in st.session_state:
     st.session_state.current_question_index = 0  # Start with the first question
 
 if 'attempts' not in st.session_state:
     st.session_state.attempts = 0
+
+if 'show_next_button' not in st.session_state:
+    st.session_state.show_next_button = False
 
 # Get query parameters and handle '/question/x' URLs
 query_params = st.experimental_get_query_params()
@@ -33,22 +36,22 @@ def handle_answer(user_answer):
     # Check if the answer is correct
     if user_answer == correct_answer:
         st.write("Correct!")
-        # Move to the next question
-        st.session_state.current_question_index += 1
-        st.session_state.attempts = 0  # Reset attempts for the next question
-        # Update the URL to include the question number as a permalink
-        st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
+        st.session_state.show_next_button = True
     else:
         st.session_state.attempts += 1
         if st.session_state.attempts < 2:
             st.write("Wrong! Try again.")
         else:
             st.write(f"Wrong! The correct answer is: {correct_answer}")
-            # Move to the next question after showing the correct answer
-            st.session_state.current_question_index += 1
-            st.session_state.attempts = 0  # Reset attempts for the next question
-            # Update the URL to include the question number as a permalink
-            st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
+            st.session_state.show_next_button = True
+
+# Function to move to the next question
+def go_to_next_question():
+    st.session_state.current_question_index += 1
+    st.session_state.attempts = 0
+    st.session_state.show_next_button = False
+    # Update the URL to include the new question number as a permalink
+    st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
 
 # Get the current question
 current_question = questions_data[st.session_state.current_question_index]
@@ -62,7 +65,11 @@ user_answer = st.radio('Choose your answer:', ['a', 'b', 'c', 'd'])
 if st.button('Submit'):
     handle_answer(user_answer)
 
+# Display the "Next Question" button if the user answered correctly or exhausted attempts
+if st.session_state.show_next_button:
+    if st.button('Next Question'):
+        go_to_next_question()
+
 # Display a message when the quiz is completed
 if st.session_state.current_question_index >= len(questions_data):
     st.write("You've completed all the questions!")
-
