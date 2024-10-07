@@ -1,47 +1,68 @@
 import streamlit as st
-from urllib.parse import urlencode, urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs
 
 # The list of questions and their correct answers
 questions_data = [
     (1, 'c'), (2, 'b'), (3, 'b'), (4, 'd'), (5, 'a'), (6, 'd'), (7, 'c'), (8, 'b'), (9, 'b'), (10, 'a'),
     (11, 'a'), (12, 'c'), (13, 'd'), (14, 'a'), (15, 'c'), (16, 'b'), (17, 'c'), (18, 'd'), (19, 'c'), (20, 'b'),
-    (21, 'c'), (22, 'a'), (23, 'a'), (24, 'b'), (25, 'a'), (26, 'a'), (27, 'b'), (28, 'd'), (29, 'd'), (30, 'b'),
     # Add remaining questions up to 201
 ]
 
-# Get query parameters
-parsed_url = urlparse(st.experimental_get_query_params())
-query_params = parse_qs(parsed_url.query)
+# Initialize session state for tracking current question and attempts
+if 'current_question_index' not in st.session_state:
+    st.session_state.current_question_index = 0  # Start with the first question
 
-# Get question number from the URL, default to 1 if not present
-current_question_number = int(query_params.get('q', [1])[0])
-
-# Create a slider to navigate through questions
-question_number = st.slider('Question Number', 1, len(questions_data), value=current_question_number)
-
-# Create permalink for the current question
-st.markdown(f"[Permalink to this question](?{urlencode({'q': question_number})})")
-
-# Get the current question and its answer
-current_question = questions_data[question_number - 1]
-question_text = f"Question {current_question[0]}"
-correct_answer = current_question[1]
-
-# Initialize session state variables
 if 'attempts' not in st.session_state:
     st.session_state.attempts = 0
-if 'answered_correctly' not in st.session_state:
-    st.session_state.answered_correctly = False
 
-# Display the question and options
+# Get query parameters and handle '/question/x' URLs
+query_params = st.experimental_get_query_params()
+if 'question' in query_params:
+    try:
+        question_index = int(query_params['question'][0]) - 1  # Convert to zero-based index
+        if 0 <= question_index < len(questions_data):
+            st.session_state.current_question_index = question_index
+    except (ValueError, IndexError):
+        pass
+
+# Function to handle answer submission
+def handle_answer(user_answer):
+    current_question = questions_data[st.session_state.current_question_index]
+    correct_answer = current_question[1]
+
+    # Check if the answer is correct
+    if user_answer == correct_answer:
+        st.write("Correct!")
+        # Move to the next question
+        st.session_state.current_question_index += 1
+        st.session_state.attempts = 0  # Reset attempts for the next question
+        # Update the URL to include the question number as a permalink
+        st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
+    else:
+        st.session_state.attempts += 1
+        if st.session_state.attempts < 2:
+            st.write("Wrong! Try again.")
+        else:
+            st.write(f"Wrong! The correct answer is: {correct_answer}")
+            # Move to the next question after showing the correct answer
+            st.session_state.current_question_index += 1
+            st.session_state.attempts = 0  # Reset attempts for the next question
+            # Update the URL to include the question number as a permalink
+            st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
+
+# Get the current question
+current_question = questions_data[st.session_state.current_question_index]
+question_text = f"Question {current_question[0]}"
+
+# Display the question and answer options
 st.write(question_text)
 user_answer = st.radio('Choose your answer:', ['a', 'b', 'c', 'd'])
 
-# Submit button logic
+# Submit button for user to submit their answer
 if st.button('Submit'):
-    # Check if user has already answered correctly
-    if not st.session_state.answered_correctly:
-        if user_answer == correct_answer:
-            st.write("Correct!")
-            st.session_state.answered_correctly
+    handle_answer(user_answer)
+
+# Display a message when the quiz is completed
+if st.session_state.current_question_index >= len(questions_data):
+    st.write("You've completed all the questions!")
 
