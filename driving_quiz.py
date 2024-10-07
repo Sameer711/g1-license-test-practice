@@ -1,7 +1,11 @@
+Here is the updated code:
+
+### Code Update
+```python
 import streamlit as st
 from urllib.parse import urlparse, parse_qs
 
-# Set the initial page configuration with a generic title
+# Set the initial page configuration
 st.set_page_config(page_title="G1 License Test Practice", layout="centered")
 
 # The list of questions and their correct answers
@@ -11,7 +15,7 @@ questions_data = [
     # Add remaining questions up to 201
 ]
 
-# Inject custom CSS for larger feedback text and button styles
+# Inject custom CSS and JavaScript for sound effect
 st.markdown(
     """
     <style>
@@ -27,13 +31,19 @@ st.markdown(
         margin: 5px 0;
     }
     </style>
-    """, 
+    <script>
+    function playCorrectSound() {
+        var audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
+        audio.play();
+    }
+    </script>
+    """,
     unsafe_allow_html=True
 )
 
-# Initialize session state for tracking current question, attempts, score, and whether to show "Next Question" button
+# Initialize session state
 if 'current_question_index' not in st.session_state:
-    st.session_state.current_question_index = 0  # Start with the first question
+    st.session_state.current_question_index = 0
 
 if 'attempts' not in st.session_state:
     st.session_state.attempts = 0
@@ -47,15 +57,19 @@ if 'score' not in st.session_state:
 # Display the navigation permalinks at the top
 st.markdown(
     """
-    [Go to Question 1](?question=1) | [Go to Question 51](?question=51) | [Go to Question 101](?question=101) | [Go to Question 151](?question=151)
-    """
+    <a href="?question=1">Go to Question 1</a> | 
+    <a href="?question=51">Go to Question 51</a> | 
+    <a href="?question=101">Go to Question 101</a> | 
+    <a href="?question=151">Go to Question 151</a>
+    """,
+    unsafe_allow_html=True
 )
 
-# Get query parameters and handle '/question/x' URLs
+# Get query parameters
 query_params = st.experimental_get_query_params()
 if 'question' in query_params:
     try:
-        question_index = int(query_params['question'][0]) - 1  # Convert to zero-based index
+        question_index = int(query_params['question'][0]) - 1
         if 0 <= question_index < len(questions_data):
             st.session_state.current_question_index = question_index
     except (ValueError, IndexError):
@@ -66,11 +80,12 @@ def handle_answer(user_answer):
     current_question = questions_data[st.session_state.current_question_index]
     correct_answer = current_question[1]
 
-    # Check if the answer is correct
     if user_answer == correct_answer:
         st.markdown("<div class='feedback'>Correct!</div>", unsafe_allow_html=True)
-        st.session_state.score += 1  # Increase score for correct answer
+        st.session_state.score += 1
         st.session_state.show_next_button = True
+        # Play correct sound
+        st.markdown("<script>playCorrectSound();</script>", unsafe_allow_html=True)
     else:
         st.session_state.attempts += 1
         if st.session_state.attempts < 2:
@@ -84,20 +99,19 @@ def go_to_next_question():
     st.session_state.current_question_index += 1
     st.session_state.attempts = 0
     st.session_state.show_next_button = False
-    # Update the URL to include the new question number as a permalink
     st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
 
 # Get the current question
 current_question = questions_data[st.session_state.current_question_index]
 question_text = f"Question {current_question[0]}"
 
-# Dynamically set the page title to include the current question number using JavaScript
+# Set the page title dynamically
 st.markdown(
     f"""
     <script>
     document.title = 'G1 License Test Practice Question {current_question[0]}';
     </script>
-    """, 
+    """,
     unsafe_allow_html=True
 )
 
@@ -131,3 +145,4 @@ if st.session_state.show_next_button:
 if st.session_state.current_question_index >= len(questions_data):
     st.write("You've completed all the questions!")
     st.write(f"Your final score is: {st.session_state.score}/{len(questions_data)}")
+```
