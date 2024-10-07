@@ -27,13 +27,6 @@ st.markdown(
         margin: 5px 0;
     }
     </style>
-    <script>
-    function navigateToQuestion(questionNumber) {
-        const url = new URL(window.location.href);
-        url.searchParams.set('question', questionNumber);
-        window.location.href = url;
-    }
-    </script>
     """,
     unsafe_allow_html=True
 )
@@ -51,16 +44,20 @@ if 'show_next_button' not in st.session_state:
 if 'score' not in st.session_state:
     st.session_state.score = 0
 
-# Display the navigation permalinks at the top
-st.markdown(
-    """
-    <a href="javascript:navigateToQuestion(1)">Go to Question 1</a> | 
-    <a href="javascript:navigateToQuestion(51)">Go to Question 51</a> | 
-    <a href="javascript:navigateToQuestion(101)">Go to Question 101</a> | 
-    <a href="javascript:navigateToQuestion(151)">Go to Question 151</a>
-    """,
-    unsafe_allow_html=True
-)
+# Display the navigation permalinks at the top using Streamlit buttons
+col1, col2, col3, col4 = st.columns(4)
+if col1.button('Go to Question 1'):
+    st.session_state.current_question_index = 0
+    st.experimental_set_query_params(question=1)
+if col2.button('Go to Question 51'):
+    st.session_state.current_question_index = 50
+    st.experimental_set_query_params(question=51)
+if col3.button('Go to Question 101'):
+    st.session_state.current_question_index = 100
+    st.experimental_set_query_params(question=101)
+if col4.button('Go to Question 151'):
+    st.session_state.current_question_index = 150
+    st.experimental_set_query_params(question=151)
 
 # Get query parameters
 query_params = st.experimental_get_query_params()
@@ -142,3 +139,4 @@ if st.session_state.show_next_button:
 if st.session_state.current_question_index >= len(questions_data):
     st.write("You've completed all the questions!")
     st.write(f"Your final score is: {st.session_state.score}/{len(questions_data)}")
+
