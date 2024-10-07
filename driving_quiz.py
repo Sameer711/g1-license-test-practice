@@ -84,12 +84,22 @@ def go_to_next_question():
     # Update the URL to include the new question number as a permalink
     st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
 
-# Display the score
-st.write(f"Score: {st.session_state.score}/{st.session_state.current_question_index}")
-
 # Get the current question
 current_question = questions_data[st.session_state.current_question_index]
 question_text = f"Question {current_question[0]}"
+
+# Dynamically set the page title to include the current question number
+st.markdown(
+    f"""
+    <script>
+    document.title = 'G1 License Test Practice Question {current_question[0]}';
+    </script>
+    """, 
+    unsafe_allow_html=True
+)
+
+# Display the score
+st.write(f"Score: {st.session_state.score}/{st.session_state.current_question_index}")
 
 # Display the question as a header
 st.markdown(f"## {question_text}")
