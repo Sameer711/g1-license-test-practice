@@ -27,6 +27,13 @@ st.markdown(
         margin: 5px 0;
     }
     </style>
+    <script>
+    function navigateToQuestion(questionNumber) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('question', questionNumber);
+        window.location.href = url;
+    }
+    </script>
     """,
     unsafe_allow_html=True
 )
@@ -47,10 +54,10 @@ if 'score' not in st.session_state:
 # Display the navigation permalinks at the top
 st.markdown(
     """
-    <a href="?question=1">Go to Question 1</a> | 
-    <a href="?question=51">Go to Question 51</a> | 
-    <a href="?question=101">Go to Question 101</a> | 
-    <a href="?question=151">Go to Question 151</a>
+    <a href="javascript:navigateToQuestion(1)">Go to Question 1</a> | 
+    <a href="javascript:navigateToQuestion(51)">Go to Question 51</a> | 
+    <a href="javascript:navigateToQuestion(101)">Go to Question 101</a> | 
+    <a href="javascript:navigateToQuestion(151)">Go to Question 151</a>
     """,
     unsafe_allow_html=True
 )
