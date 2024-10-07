@@ -1,7 +1,3 @@
-Here is the updated code:
-
-### Code Update
-```python
 import streamlit as st
 from urllib.parse import urlparse, parse_qs
 
@@ -145,4 +141,3 @@ if st.session_state.show_next_button:
 if st.session_state.current_question_index >= len(questions_data):
     st.write("You've completed all the questions!")
     st.write(f"Your final score is: {st.session_state.score}/{len(questions_data)}")
-```
