@@ -41,6 +41,13 @@ if 'show_next_button' not in st.session_state:
 if 'score' not in st.session_state:
     st.session_state.score = 0
 
+# Display the navigation permalinks at the top
+st.markdown(
+    """
+    [Go to Question 1](?question=1) | [Go to Question 51](?question=51) | [Go to Question 101](?question=101) | [Go to Question 151](?question=151)
+    """
+)
+
 # Get query parameters and handle '/question/x' URLs
 query_params = st.experimental_get_query_params()
 if 'question' in query_params:
