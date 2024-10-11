@@ -44,8 +44,6 @@ def go_to_next_question():
     st.session_state.show_next_button = False
     # Update the URL to include the new question number as a query parameter
     st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
-    # Ensure that the title is updated after the state change
-    st.experimental_rerun()  # This forces a re-run of the app to update the page title and URL
 
 # Get query parameters and update the question number if necessary
 query_params = st.experimental_get_query_params()
