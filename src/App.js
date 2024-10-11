@@ -13,6 +13,7 @@ const App = () => {
   const [feedbackType, setFeedbackType] = useState(''); // New state for feedback type (correct or wrong)
   const [buttonsDisabled, setButtonsDisabled] = useState(false); // New state to disable buttons
 
+  // Function to handle the answer submission
   const handleAnswer = (answer) => {
     const correctAnswer = questionsData[currentQuestionIndex];  // Access correct answer directly from array
 
@@ -36,6 +37,7 @@ const App = () => {
     }
   };
 
+  // Function to go to the next question
   const goToNextQuestion = () => {
     setCurrentQuestionIndex(currentQuestionIndex + 1);  // Move to the next question
     setShowNextButton(false);
@@ -43,8 +45,12 @@ const App = () => {
     setFeedback(''); // Reset feedback for the next question
     setFeedbackType(''); // Reset feedback type
     setButtonsDisabled(false); // Enable buttons for the next question
+
+    // Update the URL with the new question number
+    window.history.pushState(null, '', `?question=${currentQuestionIndex + 2}`);
   };
 
+  // Function to jump to a specific question
   const jumpToQuestion = (index) => {
     setCurrentQuestionIndex(index);
     setShowNextButton(false);
@@ -52,8 +58,12 @@ const App = () => {
     setFeedback(''); // Reset feedback for the next question
     setFeedbackType(''); // Reset feedback type
     setButtonsDisabled(false); // Enable buttons for the next question
+
+    // Update the URL with the new question number
+    window.history.pushState(null, '', `?question=${index + 1}`);
   };
 
+  // Handle URL parameters for jumping to a specific question
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const questionParam = urlParams.get('question');
@@ -71,9 +81,9 @@ const App = () => {
 
       {/* Permalinks to jump to specific questions */}
       <div className="permalinks">
-        <button onClick={() => jumpToQuestion(50)}>Go to Question 51</button>
-        <button onClick={() => jumpToQuestion(100)}>Go to Question 101</button>
-        <button onClick={() => jumpToQuestion(150)}>Go to Question 151</button>
+        <a href="?question=51" onClick={(e) => { e.preventDefault(); jumpToQuestion(50); }}>Go to Question 51</a>
+        <a href="?question=101" onClick={(e) => { e.preventDefault(); jumpToQuestion(100); }}>Go to Question 101</a>
+        <a href="?question=151" onClick={(e) => { e.preventDefault(); jumpToQuestion(150); }}>Go to Question 151</a>
       </div>
 
       <Scoreboard score={score} questionNumber={currentQuestionIndex + 1} />
