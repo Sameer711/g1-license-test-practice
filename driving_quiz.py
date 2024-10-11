@@ -1,5 +1,4 @@
 import streamlit as st
-from urllib.parse import urlparse, parse_qs
 from questions_data import questions_data  # Import questions_data from the new file
 
 # Set the initial page configuration
