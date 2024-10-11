@@ -44,7 +44,7 @@ def go_to_next_question():
     st.session_state.show_next_button = False
     # Update the URL to include the new question number as a query parameter
     st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
-    question_text = f"Question {st.session_state.current_question_index}"
+    updateQuestionNumber()
 
 # Get query parameters and update the question number if necessary
 query_params = st.experimental_get_query_params()
@@ -56,19 +56,22 @@ if 'question' in query_params:
     except (ValueError, IndexError):
         pass
 
-# Get the current question
-current_question = questions_data[st.session_state.current_question_index]
-question_text = f"Question {current_question[0]}"
+def updateQuestionNumber():
+    # Get the current question
+    current_question = questions_data[st.session_state.current_question_index]
+    question_text = f"Question {current_question[0]}"
 
-# Inject JavaScript to update the title immediately after question changes
-st.markdown(
-    f"""
-    <script>
-    document.title = 'G1 License Test Practice Question {current_question[0]}';
-    </script>
-    """,
-    unsafe_allow_html=True
-)
+    # Inject JavaScript to update the title immediately after question changes
+    st.markdown(
+        f"""
+        <script>
+        document.title = 'G1 License Test Practice Question {current_question[0]}';
+        </script>
+        """,
+        unsafe_allow_html=True
+    )
+
+updateQuestionNumber()
 
 # Function to handle answer submission
 def handle_answer(user_answer):
