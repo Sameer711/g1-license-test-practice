@@ -59,6 +59,16 @@ if 'question' in query_params:
 current_question = questions_data[st.session_state.current_question_index]
 question_text = f"Question {current_question[0]}"
 
+# Inject JavaScript to update the title immediately after question changes
+st.markdown(
+    f"""
+    <script>
+    document.title = 'G1 License Test Practice Question {current_question[0]}';
+    </script>
+    """,
+    unsafe_allow_html=True
+)
+
 # Function to handle answer submission
 def handle_answer(user_answer):
     current_question = questions_data[st.session_state.current_question_index]
@@ -77,16 +87,6 @@ def handle_answer(user_answer):
         else:
             st.markdown(f"<div class='feedback'>Wrong! The correct answer is: {correct_answer.upper()}</div>", unsafe_allow_html=True)
             st.session_state.show_next_button = True
-
-# Set the page title dynamically based on the current question
-st.markdown(
-    f"""
-    <script>
-    document.title = 'G1 License Test Practice Question {current_question[0]}';
-    </script>
-    """,
-    unsafe_allow_html=True
-)
 
 # Display the score and update it based on the number of questions answered
 score_text = f"Score: {st.session_state.score}/{st.session_state.current_question_index + 1}"
