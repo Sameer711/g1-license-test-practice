@@ -42,10 +42,11 @@ def go_to_next_question():
     st.session_state.current_question_index += 1
     st.session_state.attempts = 0
     st.session_state.show_next_button = False
+    current_question = st.session_state.current_question_index
     # Update the URL to include the new question number as a query parameter
     st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
     question_text = f"Question {current_question[0]}"
-    
+
 # Get query parameters and update the question number if necessary
 query_params = st.experimental_get_query_params()
 if 'question' in query_params:
