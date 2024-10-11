@@ -1,0 +1,57 @@
+.App {
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.question {
+  margin: 20px;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 18px;
+}
+
+button:hover {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.scoreboard {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+/* Feedback styling */
+.feedback {
+  font-size: 20px;
+  margin: 15px;
+  font-weight: bold;
+}
+
+.feedback-correct {
+  color: green;
+}
+
+.feedback-wrong {
+  color: red;
+}
+
+.permalinks {
+  margin-bottom: 20px;
+}
+
+.permalinks button {
+  margin: 5px;
+  padding: 5px 10px;  /* Smaller padding for permalinks */
+  font-size: 14px;  /* Smaller font size */
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+}
+
+.permalinks button:hover {
+  background-color: #ddd;
+  color: black;
+}
