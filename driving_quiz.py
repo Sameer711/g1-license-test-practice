@@ -25,7 +25,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Initialize session state
+# Initialize session state for current question index, attempts, score, and show_next_button
 if 'current_question_index' not in st.session_state:
     st.session_state.current_question_index = 0
 
@@ -38,26 +38,15 @@ if 'show_next_button' not in st.session_state:
 if 'score' not in st.session_state:
     st.session_state.score = 0
 
-# Display the navigation permalinks at the top using Streamlit buttons
-col1, col2, col3, col4 = st.columns(4)
-if col1.button('Go to Question 1'):
-    st.session_state.current_question_index = 0
+# Function to move to the next question
+def go_to_next_question():
+    st.session_state.current_question_index += 1
+    st.session_state.attempts = 0
     st.session_state.show_next_button = False
-    st.experimental_set_query_params(question=1)
-if col2.button('Go to Question 51'):
-    st.session_state.current_question_index = 50
-    st.session_state.show_next_button = False
-    st.experimental_set_query_params(question=51)
-if col3.button('Go to Question 101'):
-    st.session_state.current_question_index = 100
-    st.session_state.show_next_button = False
-    st.experimental_set_query_params(question=101)
-if col4.button('Go to Question 151'):
-    st.session_state.current_question_index = 150
-    st.session_state.show_next_button = False
-    st.experimental_set_query_params(question=151)
+    # Update the URL to include the new question number as a query parameter
+    st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
 
-# Get query parameters
+# Get query parameters and update the question number if necessary
 query_params = st.experimental_get_query_params()
 if 'question' in query_params:
     try:
@@ -66,6 +55,10 @@ if 'question' in query_params:
             st.session_state.current_question_index = question_index
     except (ValueError, IndexError):
         pass
+
+# Get the current question
+current_question = questions_data[st.session_state.current_question_index]
+question_text = f"Question {current_question[0]}"
 
 # Function to handle answer submission
 def handle_answer(user_answer):
@@ -86,18 +79,7 @@ def handle_answer(user_answer):
             st.markdown(f"<div class='feedback'>Wrong! The correct answer is: {correct_answer.upper()}</div>", unsafe_allow_html=True)
             st.session_state.show_next_button = True
 
-# Function to move to the next question
-def go_to_next_question():
-    st.session_state.current_question_index += 1
-    st.session_state.attempts = 0
-    st.session_state.show_next_button = False
-    st.experimental_set_query_params(question=st.session_state.current_question_index + 1)
-
-# Get the current question
-current_question = questions_data[st.session_state.current_question_index]
-question_text = f"Question {current_question[0]}"
-
-# Set the page title dynamically
+# Set the page title dynamically based on the current question
 st.markdown(
     f"""
     <script>
@@ -107,8 +89,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Display the score
-st.write(f"Score: {st.session_state.score}/{st.session_state.current_question_index}")
+# Display the score and update it based on the number of questions answered
+score_text = f"Score: {st.session_state.score}/{st.session_state.current_question_index}"
+st.write(score_text)
 
 # Display the question as a header
 st.markdown(f"## {question_text}")
